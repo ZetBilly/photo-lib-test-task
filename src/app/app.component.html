@@ -1,7 +1,7 @@
 <mat-toolbar class="toolbar">
   <mat-toolbar-row class="custom-row">
     <div class="buttons-container">
-      <button mat-stroked-button routerLink="" routerLinkActive="active-btn">Photos</button>
+      <button mat-stroked-button routerLink="" [routerLinkActiveOptions]="{exact : true}" routerLinkActive="active-btn">Photos</button>
       <button mat-stroked-button routerLink="favorites" routerLinkActive="active-btn">Favorites</button>
     </div>
   </mat-toolbar-row>
