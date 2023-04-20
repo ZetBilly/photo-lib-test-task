@@ -1,0 +1,5 @@
+<mat-grid-list cols="3" rowHeight="200px">
+  <mat-grid-tile *ngFor="let itemId of favorites" [routerLink]="['/photos', itemId]">
+    <app-photo [url]="getUrl(itemId)" [width]="300" [height]="200"></app-photo>
+  </mat-grid-tile>
+</mat-grid-list>

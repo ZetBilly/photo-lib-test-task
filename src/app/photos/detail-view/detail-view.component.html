@@ -1,0 +1,9 @@
+<div class="container">
+  <div class="con-img">
+    <app-photo [url]="imageUrl" [width]="width" [height]="height"></app-photo>
+  </div>
+  <div class="con-controls">
+    <button mat-stroked-button *ngIf="isFavorite" (click)="removeFromFavorites()">Remove from favorites</button>
+    <button mat-stroked-button *ngIf="!isFavorite" (click)="addToFavorites()">Add to favorites</button>
+  </div>
+</div>
