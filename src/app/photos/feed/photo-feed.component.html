@@ -1,6 +1,6 @@
 <mat-grid-list cols="3" rowHeight="1:1">
   <mat-grid-tile *ngFor="let photo of photos" (click)="favorite(photo.id)">
-    <img [src]="photo.url" width="300" height="200" [alt]="'Random image with id: ' + photo.id">
+    <img [src]="photo.url" width="400" height="400" [alt]="'Random image with id: ' + photo.id">
   </mat-grid-tile>
 </mat-grid-list>
 

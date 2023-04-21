@@ -1,9 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-photo',
   templateUrl: './photo.component.html',
-  styleUrls: ['./photo.component.scss']
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PhotoComponent {
   @Input() url = 'https://picsum.photos/200/300';

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, fromEvent } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, Subject, debounceTime, distinctUntilChanged, fromEvent, takeUntil } from 'rxjs';
 
 import { PhotosApiService } from '../services/photos-api.service';
 import { IRandomPhoto } from '../models/photo.model';
@@ -10,7 +10,8 @@ import { StorageService } from '../../services/storage.service';
   templateUrl: './photo-feed.component.html',
   styleUrls: ['./photo-feed.component.scss']
 })
-export class PhotoFeedComponent implements OnInit {
+export class PhotoFeedComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
 
   constructor(private photosApiService: PhotosApiService, private storageService: StorageService) { }
 
@@ -21,22 +22,28 @@ export class PhotoFeedComponent implements OnInit {
     this.loadPhotos();
 
     fromEvent(window, 'scroll', { capture: true }).pipe(
+      takeUntil(this.destroy$),
       debounceTime(100),
       distinctUntilChanged(),
     ).subscribe(e => this.handleScroll(e));
   }
 
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.loading$.complete();
+  }
+
   public loadPhotos() {
     this.loading$.next(true);
-    this.photosApiService.generatePhotosList(9).subscribe(photos => {
-      this.photos.push(...photos);
+    this.photosApiService.generatePhotosList(9, 400, 400).subscribe(photos => {
+      this.photos = [...this.photos, ...photos];
       this.loading$.next(false);
     });
   }
 
   public favorite(id: string) {
     this.storageService.addToFavorites(id);
-    console.debug('added to favorites', id);
   }
 
   private handleScroll(ev: Event) {
@@ -48,7 +55,6 @@ export class PhotoFeedComponent implements OnInit {
     } = doc.documentElement;
 
     const pageEnd = scrollTop + clientHeight >= scrollHeight - 5;
-    console.log('pageEnd', pageEnd);
 
     if (pageEnd) {
       this.loadPhotos();

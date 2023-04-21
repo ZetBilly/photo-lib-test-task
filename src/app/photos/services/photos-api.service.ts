@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, delay, from, map, mergeMap, toArray } from 'rxjs';
 
-import { IPhoto, IRandomPhoto } from '../models/photo.model';
+import { IRandomPhoto } from '../models/photo.model';
+import { randomIntFromRange } from '../utils/rnd';
 
 @Injectable({
   providedIn: 'root',
@@ -10,21 +11,10 @@ import { IPhoto, IRandomPhoto } from '../models/photo.model';
 export class PhotosApiService {
   constructor(private http: HttpClient) {}
 
-  public getPhotosList(page: number = 1, limit: number = 20): Observable<IPhoto[]>  {
-    return this.http.get<IPhoto[]>(
-      `https://picsum.photos/v2/list?page=${page}&limit=${limit}`
-    );
-  }
-
-  public getPhotoDetails(id: number): Observable<IPhoto> {
-    return this.http.get<IPhoto>(`https://picsum.photos/id/${id}/info`);
-
-  }
-
   /**
    * Due to how API works and that we can't get random photos as prepared list with ids
    * we will generate request for random images and then we will extract image id from response
-   * to create a proper response.
+   * to create a proper model with id and url.
    * */
   public generatePhotosList(size: number, width: number = 300, height: number = 200): Observable<IRandomPhoto[]> {
     const times = new Array(size).fill(0);
@@ -49,7 +39,7 @@ export class PhotosApiService {
   }
 
   private randomDelay(min: number = 200, max: number = 300) {
-    const rndVal = Math.random() * (max - min) + min;
+    const rndVal = randomIntFromRange(min, max);
     return delay(rndVal);
   }
 }
